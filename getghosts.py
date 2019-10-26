@@ -3,6 +3,7 @@ import json
 import shutil
 import re
 import os
+import sys
 import logging
 LOG_FILENAME = 'failures.log'
 logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
@@ -15,8 +16,40 @@ ctgp_leaderboards = base_url + '/ctgp-leaderboards.json'
 nintendo_200cc_leaderboards = base_url + '/original-track-leaderboards-200cc.json'
 ctgp_200cc_leaderboards = base_url + '/ctgp-leaderboards-200cc.json'
 
+# Read arguments
+if len(sys.argv) == 1:
+	leaderboard = nintendo_leaderboards
+elif len(sys.argv) == 2:
+	if sys.argv[1] in ['150', 'nintendo']:
+		leaderboard = nintendo_leaderboards
+	elif sys.argv[1] == '200':
+		leaderboard = nintendo_200cc_leaderboards
+	elif sys.argv[1] == 'ctgp':
+		leaderboard = ctgp_leaderboards
+	else:
+		raise ValueError('Invalid Argument: {}'.format(sys.argv[1]))
+elif len(sys.argv) == 3:
+	if 'nintendo' in sys.argv:
+		if '150' in sys.argv:
+			leaderboard = nintendo_leaderboards
+		elif '200' in sys.argv:
+			leaderboard = nintendo_200cc_leaderboards
+		else:
+			raise ValueError('Invalid Arguments: {}, {}'.format(sys.argv[1], sys.argv[2]))
+	elif 'ctgp' in sys.argv:
+		if '150' in sys.argv:
+			leaderboard = ctgp_leaderboards
+		elif '200' in sys.argv:
+			leaderboard = ctgp_200cc_leaderboards
+		else:
+			raise ValueError('Invalid Arguments: {}, {}'.format(sys.argv[1], sys.argv[2]))
+	else:
+		raise ValueError('Invalid Arguments: {}, {}'.format(sys.argv[2], sys.argv[2]))
+else:
+	raise ValueError('Invalid Arguments')
+
 # Pick if you want nintendo/ctgp/200cc nintendo/200cc ctgp ghosts
-with urllib.request.urlopen(nintendo_leaderboards) as url:
+with urllib.request.urlopen(leaderboard) as url:
     data = json.loads(url.read().decode()[1:])
 
 for course_data in data['leaderboards']:
