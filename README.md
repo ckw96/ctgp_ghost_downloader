@@ -18,3 +18,4 @@ Ghost dataset specified by command line arguments. Use '200' for 200cc and 'ctgp
 1. HTTP Error 504. Caused by connection isses, either your internet connection, the connection at the database, or anything in between.
 2. HTTP Error 404. Caused by ghost not being in database.
 3. OS Errors. Caused by bad filenames, usually due to mii names containing invalid characters. Some basic handling of invalid characters implemented.
+4. Index Error. Caused by no ghosts in category (e.g. Mario Circuit glitch using karts).

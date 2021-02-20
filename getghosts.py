@@ -36,7 +36,6 @@ else:
 # Pick if you want nintendo/ctgp/200cc nintendo/200cc ctgp ghosts
 with urllib.request.urlopen(leaderboard) as url:
 	data = json.loads(url.read().decode()[1:])
-print(data)
 
 for course_data in data['leaderboards']:
 	# Some errors(?) in database
