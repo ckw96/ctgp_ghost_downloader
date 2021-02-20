@@ -17,36 +17,21 @@ nintendo_200cc_leaderboards = base_url + '/original-track-leaderboards-200cc.jso
 ctgp_200cc_leaderboards = base_url + '/ctgp-leaderboards-200cc.json'
 
 # Read arguments
-if len(sys.argv) == 1:
-	leaderboard = nintendo_leaderboards
-elif len(sys.argv) == 2:
-	if sys.argv[1] in ['150', 'nintendo']:
-		leaderboard = nintendo_leaderboards
-	elif sys.argv[1] == '200':
-		leaderboard = nintendo_200cc_leaderboards
-	elif sys.argv[1] == 'ctgp':
-		leaderboard = ctgp_leaderboards
-	else:
-		raise ValueError('Invalid Argument: {}'.format(sys.argv[1]))
-elif len(sys.argv) == 3:
-	if 'nintendo' in sys.argv:
-		if '150' in sys.argv:
-			leaderboard = nintendo_leaderboards
-		elif '200' in sys.argv:
-			leaderboard = nintendo_200cc_leaderboards
-		else:
-			raise ValueError('Invalid Arguments: {}, {}'.format(sys.argv[1], sys.argv[2]))
-	elif 'ctgp' in sys.argv:
-		if '150' in sys.argv:
-			leaderboard = ctgp_leaderboards
-		elif '200' in sys.argv:
-			leaderboard = ctgp_200cc_leaderboards
-		else:
-			raise ValueError('Invalid Arguments: {}, {}'.format(sys.argv[1], sys.argv[2]))
-	else:
-		raise ValueError('Invalid Arguments: {}, {}'.format(sys.argv[2], sys.argv[2]))
+if '200' in sys.argv and 'ctgp' in sys.argv:
+	leaderboard = ctgp_200cc_leaderboards
+elif '200' in sys.argv:
+	leaderboard = nintendo_200cc_leaderboards
+elif 'ctgp' in sys.argv:
+	leaderboard = ctgp_leaderboards
 else:
-	raise ValueError('Invalid Arguments')
+	leaderboard = nintendo_leaderboards
+
+if 'karts' in sys.argv:
+	extension = '&vehicle=karts'
+elif 'bikes' in sys.argv:
+	extension = '&vehicle=bikes'
+else:
+	extension = ''
 
 # Pick if you want nintendo/ctgp/200cc nintendo/200cc ctgp ghosts
 with urllib.request.urlopen(leaderboard) as url:
@@ -64,7 +49,7 @@ for course_data in data['leaderboards']:
 		print('Retrieving course data')
 		
 		# Data for course (want list of ghosts)
-		with urllib.request.urlopen(base_url + course_data['_links']['item']['href']+'?start=0&limit=1') as url:
+		with urllib.request.urlopen(base_url + course_data['_links']['item']['href']+'?start=0&limit=1'+extension) as url:
 			curr_course = json.loads(url.read().decode())
 		print('Retrieving ghost data')
 		
